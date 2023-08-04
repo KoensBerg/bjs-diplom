@@ -2,28 +2,26 @@
 
 const userForm = new UserForm();
 
+// Авторизация
 userForm.loginFormCallback = data => {
-  console.log(data);
-
-  ApiConnector.login(data, responce => {
-    console.log(responce);
-
-    if (responce.success) {
+  ApiConnector.login(data, response => {
+    if (response.success) {
       location.reload();
       return;
     }
-    throw new Error(`${responce.error}`);
+    
+    return userForm.setLoginErrorMessage(response.error);
   });
 }
 
+// Регистрация
 userForm.registerFormCallback = data => {
-  console.log(data);
-
-  ApiConnector.register(data, responce => {
-    if (responce.success) {
+  ApiConnector.register(data, response => {
+    if (response.success) {
       location.reload();
       return;
     }
-    throw new Error(`${responce.error}`);
+
+    return userForm.setRegisterErrorMessage(response.error);
   });
 }
