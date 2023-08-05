@@ -10,7 +10,7 @@ userForm.loginFormCallback = data => {
       return;
     }
     
-    return userForm.setLoginErrorMessage(response.error);
+    userForm.setLoginErrorMessage(response.error);
   });
 }
 
@@ -22,6 +22,6 @@ userForm.registerFormCallback = data => {
       return;
     }
 
-    return userForm.setRegisterErrorMessage(response.error);
+    userForm.setRegisterErrorMessage(response.error);
   });
 }

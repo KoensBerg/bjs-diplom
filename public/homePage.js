@@ -7,7 +7,6 @@ logoutButton.action = () => {
   ApiConnector.logout(response => {
     if (response.success) {
       location.reload();
-      return;
     }
   });
 }
@@ -24,7 +23,6 @@ const ratesBoard = new RatesBoard();
 
 function getExchangeRates() {
   ApiConnector.getStocks(response => {
-
     if (response.success) {
       ratesBoard.clearTable();
       ratesBoard.fillTable(response.data);
@@ -34,9 +32,7 @@ function getExchangeRates() {
 
 getExchangeRates();
 
-setInterval(() => {
-  getExchangeRates();
-}, 60000);
+setInterval(getExchangeRates(), 60000);
 
 // — — — — — — — — — — — — — — — — — — —
 // Операции с деньгами
@@ -83,11 +79,61 @@ moneyManager.sendMoneyCallback = (data) => {
 
     if (response.success) {
       ProfileWidget.showProfile(response.data);
-      message = `Перевели ${data.to} ${data.amount} в ${data.currency}`;
+      message = `Успешно выполнен перевод на сумму ${data.amount} ${data.currency}`;
     } else {
       message = response.error;
     }
 
     moneyManager.setMessage(response.success, message);
+  })
+}
+
+// — — — — — — — — — — — — — — — — — — —
+// Работа с Избранным
+// — — — — — — — — — — — — — — — — — — —
+const favoritesWidget = new FavoritesWidget();
+
+// Запрашиваем список избранных пользователей
+ApiConnector.getFavorites((response) => {
+  if (response.success) {
+    favoritesWidget.clearTable();
+    favoritesWidget.fillTable(response.data);
+    moneyManager.updateUsersList(response.data);
+  }
+});
+
+// Добавление пользователя в Избранное
+favoritesWidget.addUserCallback = (data) => {
+  let message = '';
+
+  ApiConnector.addUserToFavorites(data, (response) => {
+    if (response.success) {
+      favoritesWidget.clearTable();
+      favoritesWidget.fillTable(response.data);
+      moneyManager.updateUsersList(response.data);
+      message = `Пользователь "${data.name}" добавлен в Избранное`;
+    } else {
+      message = response.error;
+    }
+
+    favoritesWidget.setMessage(response.success, message);
+  });
+}
+
+// Удаление пользователя из Избранного
+favoritesWidget.removeUserCallback = (data) => {
+  let message = '';
+
+  ApiConnector.removeUserFromFavorites(data, (response) => {
+    if (response.success) {
+      favoritesWidget.clearTable();
+      favoritesWidget.fillTable(response.data);
+      moneyManager.updateUsersList(response.data);
+      message = `Пользователь удалён из Избранного`;
+    } else {
+      message = response.error;
+    }
+
+    favoritesWidget.setMessage(response.success, message);
   })
 }
