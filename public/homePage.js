@@ -32,7 +32,7 @@ function getExchangeRates() {
 
 getExchangeRates();
 
-setInterval(getExchangeRates(), 60000);
+setInterval(getExchangeRates, 60000);
 
 // — — — — — — — — — — — — — — — — — — —
 // Операции с деньгами
